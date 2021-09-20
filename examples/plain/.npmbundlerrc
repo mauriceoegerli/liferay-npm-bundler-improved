@@ -4,7 +4,8 @@
 		"features": {
 			"js-extender": true,
 			"web-context": "/plain",
-			"localization": "features/localization/Language"
+			"localization": "features/localization/Language",
+            "configuration": "features/configuration/configuration.json"
 		}
 	}
 }

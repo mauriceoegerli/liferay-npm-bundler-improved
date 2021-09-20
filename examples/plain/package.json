@@ -19,10 +19,8 @@
   },
   "main": "index",
   "devDependencies": {
+    "liferay-npm-bundler-improved": "^1.0.0-beta.11",
     "liferay-npm-build-support": "^2.25.0",
     "liferay-npm-bundler": "^2.25.0"
-  },
-  "dependencies": {
-    "liferay-npm-bundler-improved": "^1.0.0-beta.11"
   }
 }

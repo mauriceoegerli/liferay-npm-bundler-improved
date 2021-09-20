@@ -1,0 +1,25 @@
+{
+  "system": {
+    "category": "system-sample",
+    "name": "system-sample-configuration",
+    "fields": {
+      "system-sample-configuration-field": {
+        "type": "string",
+        "name": "system-sample-configuration-field-name",
+        "description": "system-sample-configuration-field-description",
+        "default": "System Configuration"
+      }
+    }
+  },
+  "portletInstance": {
+    "name": "instance-sample-configuration",
+    "fields": {
+      "instance-sample-configuration-field": {
+        "type": "string",
+        "name": "instance-sample-configuration-field-name",
+        "description": "instance-sample-configuration-field-description",
+        "default": "Instance Configuration"
+      }
+    }
+  }
+}
