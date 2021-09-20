@@ -3,6 +3,8 @@ import Log from '../classes/Log'
 import { promisify } from 'util'
 import * as path from 'path'
 import WarningHandler from './WarningHandler'
+import npmbundlerrc from '../types/npmbundlerrc'
+import * as buffer from 'buffer'
 
 const readFilePromisified = promisify(readFile)
 const readDirPromisified = promisify(readdir)
@@ -14,7 +16,7 @@ export default class FeaturesHandler {
     /**
      * The npmbundlerrc file content
      */
-    public npmbundlerrc: unknown = {}
+    public npmbundlerrc: undefined | npmbundlerrc = undefined
 
     /**
      * Boolean if localization is present
@@ -28,6 +30,9 @@ export default class FeaturesHandler {
      */
     private localizationPath: string = ''
 
+    public hasConfiguration: boolean = false
+    public configurationPath: string = ''
+
     /**
      * Detect the features of the portlet
      */
@@ -39,8 +44,9 @@ export default class FeaturesHandler {
             return
         }
 
-        if (this.npmbundlerrc && this.npmbundlerrc['create-jar'] && this.npmbundlerrc['create-jar']['features']) {
+        if (this.npmbundlerrc?.['create-jar']?.features) {
             await this.detectLocalization()
+            await this.detectConfiguration()
         } else {
             Log.debug('no feature has been detected')
         }
@@ -53,7 +59,7 @@ export default class FeaturesHandler {
     private async getConfigurationFile (): Promise<void> {
         if (existsSync('.npmbundlerrc')) {
             const data = await readFilePromisified('.npmbundlerrc')
-            this.npmbundlerrc = JSON.parse(data.toString())
+            this.npmbundlerrc = JSON.parse(data.toString()) as npmbundlerrc
         }
     }
 
@@ -62,7 +68,7 @@ export default class FeaturesHandler {
      * @private
      */
     private async detectLocalization (): Promise<void> {
-        const localization = this.npmbundlerrc['create-jar']['features']['localization']
+        const localization = this.npmbundlerrc?.['create-jar']?.features?.localization
 
         if (localization) {
             const localizationPathSplitted: Array<string> = localization.split('/')
@@ -77,6 +83,21 @@ export default class FeaturesHandler {
     }
 
     /**
+     * Detect the configuration feature
+     * @private
+     */
+    private async detectConfiguration (): Promise<void> {
+        const configurationPath: string = this.npmbundlerrc?.['create-jar']?.features?.configuration
+
+        if (configurationPath) {
+            Log.debug(`configuration feature detected: file is at ${configurationPath}`)
+
+            this.hasConfiguration = true
+            this.configurationPath = configurationPath
+        }
+    }
+
+    /**
      * Get the localizations as map with name
      */
     public async getLocalizations (): Promise<Map<string, string>> {
@@ -85,7 +106,7 @@ export default class FeaturesHandler {
 
         for (const file of files) {
             if (file.startsWith('Language') && file.endsWith('.properties')) {
-                const data = await readFilePromisified(path.join(this.localizationPath, file))
+                const data: buffer = await readFilePromisified(path.join(this.localizationPath, file))
                 localizations.set(file, data.toString())
             }
         }
@@ -96,5 +117,13 @@ export default class FeaturesHandler {
         }
 
         return localizations
+    }
+
+    /**
+     * Get the configuration as unknown object
+     */
+    public async getConfigurations (): Promise<unknown> {
+        const data: buffer = await readFilePromisified(this.configurationPath)
+        return JSON.parse(data.toString())
     }
 }
