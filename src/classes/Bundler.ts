@@ -8,6 +8,7 @@ import TemplateHandler from '../handlers/TemplateHandler'
 import JarHandler from '../handlers/JarHandler'
 import DeploymentHandler from '../handlers/DeploymentHandler'
 import FeaturesHandler from '../handlers/FeaturesHandler'
+import ConfigurationHandler from '../handlers/ConfigurationHandler'
 
 const unlinkPromisified = promisify(unlink)
 
@@ -74,6 +75,7 @@ export default class Bundler {
 
     Log.info(false, 'process features')
     const featuresHandler = new FeaturesHandler()
+    const configurationHandler = new ConfigurationHandler()
 
     Log.debug('detect features')
     await featuresHandler.detectFeatures()
@@ -89,6 +91,15 @@ export default class Bundler {
           content.file(key, value)
         }
       }
+    }
+
+    if (featuresHandler.hasConfiguration) {
+      const configurations = await featuresHandler.getConfigurations()
+      await configurationHandler.process(configurations)
+
+      const features = this.jarHandler.jar.folder('features')
+      features.file('metatype.json', configurationHandler.getMetatype(this.packageHandler.pack.name))
+      features.file('portlet_preferences.json', configurationHandler.getPortletPreferences())
     }
 
     Log.success(timer, 'finished feature processing successful')
