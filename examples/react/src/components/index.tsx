@@ -9,7 +9,7 @@ const App = (liferayParams: PortletEntryParams): any => {
     <div>
       <div>
         <span className="tag">
-          {String(Liferay.Language.get('portlet-namespace'))}:
+          {String(Liferay.Language.get('portlet-namespace'))}: {''}
         </span>
         <span className="value">
             {liferayParams.portletNamespace}
@@ -17,7 +17,7 @@ const App = (liferayParams: PortletEntryParams): any => {
       </div>
       <div>
         <span className="tag">
-          {String(Liferay.Language.get('context-path'))}:
+          {String(Liferay.Language.get('context-path'))}: {''}
         </span>
         <span className="value">
             {liferayParams.contextPath}
@@ -25,7 +25,7 @@ const App = (liferayParams: PortletEntryParams): any => {
       </div>
       <div>
         <span className="tag">
-          {String(Liferay.Language.get('portlet-element-id'))}:
+          {String(Liferay.Language.get('portlet-element-id'))}: {''}
         </span>
         <span className="value">
             {liferayParams.portletElementId}
@@ -33,7 +33,7 @@ const App = (liferayParams: PortletEntryParams): any => {
       </div>
       <div>
         <span className="tag">
-          {String(Liferay.Language.get('configuration'))}:
+          {String(Liferay.Language.get('configuration'))}: {''}
         </span>
         <span className="value pre">
           {JSON.stringify(liferayParams.configuration, null, 2)}
